@@ -1,0 +1,225 @@
+---
+title: Authentication
+description: Configure authentication providers including Google OAuth, Magic Link email, and password-based sign-in
+icon: Lock
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+# Setting Up Authentication
+
+Indie Kit uses [NextAuth.js v5](https://authjs.dev/) (Auth.js) with JWT session strategy. It ships with Google OAuth, Magic Link email, and optional password authentication out of the box.
+
+<Callout title="Sign-In Is Disabled by Default" type="warn">
+  Authentication is turned off in the default `.env` file. You must enable it before users can sign in.
+</Callout>
+
+## 1. Enable Authentication
+
+Open your `.env.local` file and add:
+
+```bash
+NEXT_PUBLIC_SIGNIN_ENABLED=true
+```
+
+This environment variable controls whether the `signIn` callback in NextAuth allows sign-ins. Without it set to `true`, all sign-in attempts will be rejected.
+
+## 2. Generate Auth Secret
+
+NextAuth requires a secret key for signing JWT tokens. Generate one with:
+
+```bash
+npx auth secret
+```
+
+This creates an `AUTH_SECRET` entry in your `.env.local` file automatically. If you prefer to set it manually:
+
+```bash
+AUTH_SECRET="your-generated-secret-here"
+```
+
+<Callout title="Keep Your Secret Safe" type="warn">
+  Never commit `AUTH_SECRET` to version control. Your `.env.local` file is already in `.gitignore`.
+</Callout>
+
+## 3. Configure Auth Providers
+
+<Tabs items={['Google OAuth', 'Magic Link Email', 'Password']}>
+  <Tab value="Google OAuth">
+    ### Setting Up Google OAuth
+
+    1. **Create a Google Cloud Project**
+       - Go to [Google Cloud Console](https://console.cloud.google.com/)
+       - Click "Select a project" > "New Project"
+       - Enter a project name and click "Create"
+
+    2. **Configure OAuth Consent Screen**
+       - Navigate to "APIs & Services" > "OAuth consent screen"
+       - Select "External" user type and click "Create"
+       - Fill in the required fields: App name, User support email, Developer contact email
+       - Click "Save and Continue" through the remaining steps
+
+    3. **Create OAuth Credentials**
+       - Go to "APIs & Services" > "Credentials"
+       - Click "Create Credentials" > "OAuth client ID"
+       - Select "Web application" as the application type
+       - Add authorized redirect URI:
+         ```
+         http://localhost:3000/api/auth/callback/google
+         ```
+       - For production, also add:
+         ```
+         https://yourdomain.com/api/auth/callback/google
+         ```
+       - Click "Create" and copy your Client ID and Client Secret
+
+    4. **Add to Environment Variables**
+       ```bash
+       GOOGLE_CLIENT_ID="your-google-client-id"
+       GOOGLE_CLIENT_SECRET="your-google-client-secret"
+       ```
+
+    <Callout title="Email Account Linking" type="info">
+      Indie Kit enables `allowDangerousEmailAccountLinking` for Google OAuth. This means if a user signs up with email first and then uses Google with the same email, the accounts will be linked automatically.
+    </Callout>
+  </Tab>
+
+  <Tab value="Magic Link Email">
+    ### Setting Up Magic Link Email
+
+    Magic Link lets users sign in with a one-click email link — no password needed.
+
+    1. **Create a Resend Account**
+       - Go to [resend.com](https://resend.com) and create an account
+       - Verify your email domain (or use the sandbox for development)
+
+    2. **Get Your API Key**
+       - Navigate to "API Keys" in your Resend dashboard
+       - Click "Create API Key"
+       - Copy the key
+
+    3. **Add to Environment Variables**
+       ```bash
+       RESEND_API_KEY="your-resend-api-key"
+       ```
+
+    4. **Configure Email Sender** (Optional)
+       Update the sender details in `src/lib/config.ts`:
+       ```ts
+       email: {
+         senderName: "Your App Name",
+         senderEmail: "noreply@yourdomain.com",
+       },
+       ```
+
+    <Callout title="Development Mode" type="info">
+      During local development, magic link URLs are logged to the console even if email sending is not configured. Check your terminal output for the sign-in link.
+    </Callout>
+  </Tab>
+
+  <Tab value="Password">
+    ### Enabling Password Authentication
+
+    Password auth is disabled by default. To enable it:
+
+    1. **Update Config File**
+       Open `src/lib/config.ts` and set:
+       ```ts
+       auth: {
+         enablePasswordAuth: true,
+       },
+       ```
+
+    2. **That's It!**
+       The sign-in and sign-up pages automatically adapt. When enabled:
+       - `/sign-in` shows email + password fields instead of the magic link form
+       - `/sign-up` shows a full registration form with name, email, and password
+
+    <Callout title="Password Security" type="info">
+      Passwords are hashed with bcrypt (10 salt rounds) before storage. Password-based auth also includes sign-up, password reset, and password confirmation flows.
+    </Callout>
+
+    <Callout title="No Extra Environment Variables Needed" type="success">
+      Password authentication does not require any additional environment variables. It is entirely controlled by the config file toggle.
+    </Callout>
+  </Tab>
+</Tabs>
+
+## Environment Variables Summary
+
+Here's a complete reference of all auth-related environment variables:
+
+| Variable | Required | Description |
+|---|---|---|
+| `NEXT_PUBLIC_SIGNIN_ENABLED` | Yes | Set to `true` to enable authentication |
+| `AUTH_SECRET` | Yes | Secret key for JWT signing (generate with `npx auth secret`) |
+| `NEXTAUTH_URL` | Yes | Your application URL (e.g., `http://localhost:3000`) |
+| `GOOGLE_CLIENT_ID` | For Google OAuth | Google OAuth client ID |
+| `GOOGLE_CLIENT_SECRET` | For Google OAuth | Google OAuth client secret |
+| `RESEND_API_KEY` | For Magic Link | Resend API key for sending emails |
+
+```bash
+# Add these to your .env.local file
+NEXT_PUBLIC_SIGNIN_ENABLED=true
+AUTH_SECRET="generated-by-npx-auth-secret"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Google OAuth (optional)
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+
+# Magic Link Email (optional)
+RESEND_API_KEY="your-resend-api-key"
+```
+
+## Session Strategy
+
+Indie Kit uses **JWT** session strategy by default. This means:
+
+- Sessions are stored as encrypted tokens in cookies
+- No database lookups needed for session validation
+- Ideal for serverless deployments
+
+If you prefer database sessions, update `src/auth.ts`:
+
+```ts
+session: {
+  strategy: "database",
+},
+```
+
+<Callout title="Learn More" type="info">
+  Read about session strategies in the [Auth.js documentation](https://authjs.dev/concepts/session-strategies).
+</Callout>
+
+## Troubleshooting
+
+### Sign-in button does nothing or returns an error
+- Verify `NEXT_PUBLIC_SIGNIN_ENABLED=true` is set in `.env.local`
+- Make sure you have run `npx auth secret` or set `AUTH_SECRET` manually
+- Check that `NEXTAUTH_URL` matches your actual app URL
+
+### Google OAuth redirect error
+- Confirm your redirect URI in Google Cloud Console matches exactly:
+  `http://localhost:3000/api/auth/callback/google` (for local development)
+- Ensure `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are correct
+- Check that the OAuth consent screen is configured
+
+### Magic Link email not received
+- Verify `RESEND_API_KEY` is set and valid
+- Check your spam/junk folder
+- In development, check the terminal console for the magic link URL
+
+### Password sign-in not showing
+- Confirm `enablePasswordAuth` is set to `true` in `src/lib/config.ts`
+- Restart your development server after changing the config
+
+## Next Steps
+
+- [Set up payments](/docs/setup/payments) to start accepting subscriptions
+- [Launch your landing page](/docs/launch-in-5-minutes) to go live
+
+<Callout title="Authentication Ready!" type="success">
+  Your auth system is configured! Users can now sign in at `/sign-in` and create accounts at `/sign-up`.
+</Callout>

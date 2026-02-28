@@ -1,0 +1,105 @@
+---
+title: Launch in 5 Minutes
+description: Get your landing page live and start collecting customers in under 5 minutes
+icon: Zap
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+Get your beautiful landing page live and start collecting customers in under 5 minutes!
+
+<iframe
+  className="w-full aspect-video rounded-lg"
+  src="https://www.youtube.com/embed/dAKKJT3_DJ4"
+  title="Launch in 5 Minutes"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+/>
+
+## What You'll Build
+
+A stunning, conversion-optimized landing page with:
+
+- Hero section with CTA
+- Pricing table (monthly/annual)
+- Social proof and testimonials
+- FAQ section
+- Email collection (optional)
+
+<Callout title="Quick Start" type="success">
+  No design skills needed! Just mix and match pre-built components to create your perfect landing page.
+</Callout>
+
+## Let's Build!
+
+### Step 1: Get the Code Running
+
+If you haven't already, [follow the setup guide](/docs/getting-started) to clone and run locally.
+
+### Step 2: Customize Your Homepage
+
+Open `src/app/(website-layout)/page.tsx` and compose your landing page:
+
+```tsx
+import { WebsiteFAQs } from "@/components/website/faqs";
+import { CTA2 } from "@/components/website/cta-2";
+import { WithWithout } from "@/components/website/with-without";
+import Hero2 from "@/components/sections/hero-2";
+import CTA1 from "@/components/website/cta-1";
+import MonthlyAnnualPricing from "@/components/website/monthly-annual-pricing";
+import TextRevealByWord from "@/components/ui/text-reveal";
+
+export default function WebsiteHomepage() {
+  return (
+    <>
+      <Hero2 />
+      <CTA1 />
+      <MonthlyAnnualPricing />
+      <TextRevealByWord text="Your compelling testimonial or value prop here" />
+      <WithWithout />
+      <MonthlyAnnualPricing />
+      <WebsiteFAQs />
+      <CTA2 />
+    </>
+  );
+}
+```
+
+**What each component does:**
+
+- `Hero2` — Eye-catching hero with headline and CTA button
+- `CTA1` — Primary call-to-action section
+- `MonthlyAnnualPricing` — Pricing table with toggle
+- `TextRevealByWord` — Animated testimonial section
+- `WithWithout` — Before/after comparison
+- `WebsiteFAQs` — Frequently asked questions
+- `CTA2` — Final conversion push
+
+<Callout title="Mix & Match" type="info">
+  Reorder, remove, or duplicate components to match your needs! Check all available components in the customisation docs for more options.
+</Callout>
+
+### Step 3: Deploy!
+
+Push to GitHub and deploy to Vercel:
+
+```bash
+git add .
+git commit -m "Launch landing page"
+git push
+```
+
+That's it! Your landing page is live!
+
+## Next Steps
+
+Now that your page is live:
+
+1. [Customize components](/docs/customisation/components) with your branding
+2. [Set up payments](/docs/payments/create-subscription) to start earning
+3. [Launch with waitlist](/docs/launch-with-waitlist) to build hype
+4. [Add analytics](/docs/analytics) to track conversions
+
+<Callout title="Start Collecting Customers!" type="success">
+  You're now live and ready to accept customers! Share your link and watch the signups roll in.
+</Callout>

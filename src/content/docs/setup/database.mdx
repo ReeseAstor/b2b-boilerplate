@@ -1,0 +1,160 @@
+---
+title: Database
+description: Set up your database with Neon, Supabase, or PlanetScale
+icon: Database
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import Image from 'next/image';
+
+# Setting Up Your Database
+
+Indie Kit supports multiple database providers. Choose the one that best fits your needs!
+
+<Tabs items={['Neon (Recommended)', 'Supabase', 'PlanetScale']}>
+  <Tab value="Neon (Recommended)">
+    ## Setting up Neon (PostgreSQL)
+
+    1. **Create a Neon Account**
+       - Go to [neon.tech](https://neon.tech)
+       - Click "Sign Up" and create your account
+       - You can use GitHub for quick signup
+
+    2. **Create a New Project**
+       - Click "New Project" in your Neon dashboard
+       - Choose a name for your project
+       - Select the region closest to your users
+       - Click "Create Project"
+
+    3. **Get Your Connection String**
+       ```bash
+       # Your connection string will look like this:
+       postgresql://[user]:[password]@[neon-host]/[database]
+       ```
+       - Find the connection string in your project dashboard
+       - Make sure to use the full connection string with your credentials
+
+    <Callout title="Pro Tip" type="info">
+      Neon offers a generous free tier perfect for development and small projects. You can always upgrade as your project grows!
+    </Callout>
+  </Tab>
+
+  <Tab value="Supabase">
+    ## Setting up Supabase (PostgreSQL)
+
+    1. **Create a Supabase Account**
+       - Go to [supabase.com](https://supabase.com)
+       - Click "Start your project"
+       - Sign up with GitHub for easier setup
+
+    2. **Create a New Project**
+       - Click "New Project" in your dashboard
+       - Fill in your project details
+       - Choose a region and database password
+       - Wait for project creation (usually 1-2 minutes)
+
+    3. **Get Your Connection String**
+       - Click "Connect"
+
+       <Image src="/assets/images/docs/supabase-tutorial.png" alt="Supabase Tutorial" width={1000} height={1000} />
+
+       ```bash
+       postgresql://postgres:[YOUR-PASSWORD]@db.[project-ref].supabase.co:5432/postgres
+       ```
+
+    <Callout title="Pro Tip" type="info">
+      Supabase provides additional features like Auth, Storage, and Edge Functions! Perfect if you need a full backend platform.
+    </Callout>
+  </Tab>
+
+  <Tab value="PlanetScale">
+    ## Setting up PlanetScale (MySQL)
+
+    1. **Create a PlanetScale Account**
+       - Visit [planetscale.com](https://planetscale.com)
+       - Click "Sign Up"
+       - Create your account (GitHub recommended)
+
+    2. **Create a New Database**
+       - Click "Create a new database"
+       - Choose a name and region
+       - Select "Hobby" plan for development
+       - Click "Create database"
+
+    3. **Get Your Connection String**
+       - Click "Connect"
+       - Choose "Connect with" > "Prisma"
+       - Copy the connection string
+       ```bash
+       mysql://[username]:[password]@[host]/[database]?sslaccept=strict
+       ```
+
+    <Callout title="Pro Tip" type="info">
+      PlanetScale's branching feature is great for schema changes! Perfect for teams with complex database workflows.
+    </Callout>
+  </Tab>
+</Tabs>
+
+## Configuring Your Project
+
+1. **Set Up Environment Variables**
+   - Open your `.env.local` file
+   - Add your database connection string:
+   ```bash
+   DATABASE_URL="your-connection-string-here"
+   ```
+
+## Syncing Database Schema
+
+2. **Push Schema to Database**
+   ```bash
+   npx drizzle-kit push
+   ```
+   This command will:
+   - Connect to your database
+   - Create all necessary tables
+   - Sync your schema changes
+
+3. **Verify Setup**
+   ```bash
+   npm run dev
+   ```
+   - Start your development server
+   - Your app should now connect to the database
+   - Check the console for any connection messages
+
+<Callout title="Session Strategy" type="info">
+  Indie Kit uses "JWT" session strategy by default, though you can use "Database" session strategy if you want to. Read more about it [here](https://authjs.dev/concepts/session-strategies).
+</Callout>
+
+If you want to use your own hosted PostgreSQL database, you may need to set the following in `db.ts` file:
+
+```typescript
+import { drizzle } from 'drizzle-orm/postgres-js';
+
+export const db = drizzle(process.env.DATABASE_URL!)
+```
+
+## Troubleshooting
+
+If you encounter any issues:
+
+1. **Connection Issues**
+   - Verify your connection string is correct
+   - Check if your IP is allowed in database settings
+   - Ensure your database user has proper permissions
+
+2. **Schema Sync Issues**
+   - Check if `drizzle.config.ts` is properly configured
+   - Verify your schema files are correctly exported
+   - Look for any console errors during schema push
+
+## Next Steps
+
+- Set up your database indexes for better performance
+- Configure database pooling if needed
+- Consider setting up database backups
+- Explore your database provider's dashboard for monitoring
+
+Now your Indie Kit app is connected to your chosen database! Ready to start building?

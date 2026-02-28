@@ -1,0 +1,162 @@
+---
+title: Getting Started
+description: Get Indie Kit running on your local machine in under 5 minutes
+icon: Rocket
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+
+Let's get Indie Kit running on your local machine! You'll be up and running in under 5 minutes.
+
+<iframe
+  className="w-full aspect-video rounded-lg"
+  src="https://www.youtube.com/embed/Ho9MygCGGuI"
+  title="Indie Kit Installation Guide"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+/>
+
+<Callout title="Prerequisites" type="info">
+  Make sure you have **Node.js 18+** and **Git** installed. That's all you need!
+</Callout>
+
+## Installation Steps
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Indie-Kit/indie-kit
+cd indie-kit
+```
+
+<Callout title="B2B Multi-Tenancy Kit" type="info">
+  Building a B2B SaaS? Clone the B2B Kit instead:
+  ```bash
+  git clone https://github.com/Indie-Kit/b2b-boilerplate
+  ```
+</Callout>
+
+### 2. Install pnpm (if needed)
+
+We use pnpm because it's faster and more efficient:
+
+```bash
+npm install -g pnpm
+```
+
+### 3. Install Dependencies
+
+```bash
+pnpm install
+```
+
+### 4. Start Development Server
+
+```bash
+pnpm dev
+```
+
+### 5. Open in Browser
+
+Visit `http://localhost:3000` and see your app running!
+
+### 6. Reset Git Origin
+
+Disconnect from Indie Kit repo and connect to yours:
+
+```bash
+git remote remove origin
+git remote add origin YOUR_REPO_URL
+```
+
+<Callout title="Ready to Code!" type="success">
+  Your local environment is set up! Start customizing and building your SaaS.
+</Callout>
+
+## Project Structure
+
+Understanding where things are helps you move fast:
+
+```
+indie-kit/
+├── src/
+│   ├── app/              # Next.js app router (pages & layouts)
+│   │   └── api/          # API routes
+│   ├── components/       # React components
+│   ├── lib/              # Utilities, hooks, helpers
+│   ├── db/               # Database schema & queries
+│   └── emails/           # Email templates
+├── public/               # Static assets
+└── .env.local           # Environment variables (create this)
+```
+
+**Key folders:**
+
+- `/src/app` — Your pages and app logic
+- `/src/components` — Reusable UI components
+- `/src/lib` — Utilities and helpers
+- `/src/db` — Database schema (Drizzle ORM)
+- `/src/emails` — Email templates (React Email)
+
+## Configuration
+
+### Config File
+
+Open `src/lib/config.ts` to customize your app:
+
+```ts
+export const config = {
+  appName: "Your App Name",
+  auth: {
+    enablePasswordAuth: true,
+  },
+  // ... more options
+}
+```
+
+<Callout title="Central Configuration" type="info">
+  Everything is configured in one place! Update `config.ts` to enable/disable features like auth methods, payment providers, and more.
+</Callout>
+
+### Environment Variables
+
+Create `.env.local` for local development:
+
+```bash
+# Database
+DATABASE_URL="your-database-url"
+
+# Auth
+NEXTAUTH_SECRET="your-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Email
+RESEND_API_KEY="your-api-key"
+
+# Payments (add when ready)
+# STRIPE_SECRET_KEY="your-stripe-key"
+```
+
+**Environment file hierarchy:**
+
+- `.env` — Defaults (committed to repo)
+- `.env.local` — Local development (not committed)
+- `.env.production` — Production settings (in your hosting platform)
+
+<Callout title="Keep Secrets Safe!" type="warn">
+  Never commit `.env.local` to git! It contains sensitive keys and is already in `.gitignore`.
+</Callout>
+
+## Next Steps
+
+Now that you're set up, here's what to do next:
+
+1. **Configure your database** — [Set up PostgreSQL](/docs/setup/database)
+2. **Launch your landing page** — [Go live in 5 minutes](/docs/launch-in-5-minutes)
+3. **Set up authentication** — [Configure auth providers](/docs/setup/auth)
+4. **Add payments** — [Connect Stripe or others](/docs/setup/payments)
+
+<Callout title="Start Building!" type="success">
+  You're all set! Pick your next step above and start building your SaaS.
+</Callout>
