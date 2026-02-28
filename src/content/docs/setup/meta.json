@@ -1,5 +1,5 @@
 {
   "title": "Setup",
   "icon": "Cog",
-  "pages": ["database"]
+  "pages": ["database", "auth"]
 }
